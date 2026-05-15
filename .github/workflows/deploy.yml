@@ -1,0 +1,25 @@
+name: Deploy to Ubuntu Server
+
+on:
+  push:
+    branches: [ "main" ] # main 브랜치에 코드 올리면 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            # 내 우분투 서버에서 실행될 명령어들
+            cd ~/project # 실제 본인의 프로젝트 폴더 경로로 수정하세요!
+            docker-compose pull
+            docker-compose up -d
